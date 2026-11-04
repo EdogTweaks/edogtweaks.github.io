@@ -310,6 +310,11 @@ section { scroll-margin-top: 96px; }
 .req { display: inline-flex; align-items: center; gap: 9px; padding: 10px 16px; border-radius: 99px; border: 1px solid var(--line); background: rgba(8, 15, 32, 0.7); font-size: 14px; color: #c6d2ea; }
 .req svg { width: 16px; height: 16px; color: var(--accent); flex: none; }
 
+.guide { margin: 34px auto 0; max-width: 760px; display: grid; gap: 14px; }
+.guide img { width: 100%; height: auto; border-radius: 18px; border: 1px solid var(--line-2); box-shadow: 0 24px 60px rgba(0, 0, 0, 0.5); }
+.guide figcaption { text-align: center; color: var(--muted); font-size: 15px; }
+.guide figcaption b { color: var(--fg); }
+
 /* faq */
 .faq { max-width: 780px; margin: 0 auto; display: grid; gap: 12px; }
 .faq details { border-radius: 13px; border: 1px solid var(--line); background: rgba(11, 20, 39, 0.8); transition: border-color .2s; }
@@ -506,7 +511,7 @@ footer { margin-top: 90px; border-top: 1px solid var(--line); background: rgba(4
         <small>STEP 02</small>
         <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M7 10l5 5 5-5M4 20h16"/></svg></div>
         <h3>Install &amp; unlock</h3>
-        <p>Run the installer, then paste your access code the first time the app opens. If Windows shows "Windows protected your PC", click More info, then Run anyway.</p>
+        <p>Unzip it, open the app and paste your access code. If Windows shows "Windows protected your PC", click More info, then Run anyway (picture guide below).</p>
       </div>
       <div class="step" style="--s: var(--c-controller)">
         <small>STEP 03</small>
@@ -521,6 +526,11 @@ footer { margin-top: 90px; border-top: 1px solid var(--line); background: rgba(4
       <span class="req"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Undo for every tweak</span>
       <span class="req"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Controller Macro sets up the free ViGEmBus driver</span>
     </div>
+    <figure class="guide" id="windows-warning">
+      <img src="assets/windows-guide.png" width="1200" height="1200" loading="lazy"
+           alt="Picture guide. 1: right-click the zip and pick Extract All. 2: double-click the app in the new folder. 3: if the blue 'Windows protected your PC' box shows up, click More info. 4: click Run anyway. Then paste your access code.">
+      <figcaption>Seeing a blue "Windows protected your PC" box? Click <b>More info</b>, then <b>Run anyway</b>. It only shows the first time.</figcaption>
+    </figure>
   </section>
 
   <section id="faq" class="section wrap">
