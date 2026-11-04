@@ -268,7 +268,6 @@ section { scroll-margin-top: 96px; }
 .tags { display: grid; justify-items: end; gap: 6px; }
 .tag.sale { color: var(--good); background: color-mix(in srgb, var(--good) 12%, transparent); border-color: color-mix(in srgb, var(--good) 35%, transparent); }
 .deal-note { margin-top: -6px; font-size: 13px; color: var(--muted); }
-.deal-note code { font: 700 12.5px/1 var(--font-mono); color: var(--good); }
 .buy {
   width: 100%; display: inline-flex; align-items: center; justify-content: center; gap: 9px;
   padding: 13px 16px; border-radius: 11px; border: 0; cursor: pointer;
@@ -362,9 +361,6 @@ footer { margin-top: 90px; border-top: 1px solid var(--line); background: rgba(4
 .receipt .good { color: var(--good); }
 .receipt .total { padding-top: 9px; border-top: 1px solid var(--line); color: var(--fg); font-weight: 700; }
 .receipt .total b { font: 800 22px/1 var(--font-display); color: var(--fg); }
-.code-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 10px 12px 10px 16px; border-radius: 12px; border: 1px dashed color-mix(in srgb, var(--good) 55%, transparent); background: color-mix(in srgb, var(--good) 7%, transparent); }
-.code-row code { font: 700 17px/1 var(--font-mono); letter-spacing: 0.08em; color: var(--good); user-select: all; }
-.code-row button { padding: 8px 12px; border-radius: 8px; border: 0; cursor: pointer; background: var(--good); color: var(--accent-ink); font: 800 12px/1 var(--font-display); letter-spacing: 0.08em; text-transform: uppercase; }
 
 /* ---------- responsive ---------- */
 @media (max-width: 1060px) { .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
@@ -620,26 +616,33 @@ footer { margin-top: 90px; border-top: 1px solid var(--line); background: rgba(4
       <div class="good" id="r-off-row"><span id="r-off-label"></span><span id="r-off"></span></div>
       <div class="total"><span>You pay</span><b id="r-total"></b></div>
     </div>
-    <div class="code-row" id="code-row"><span class="fine">Sale code</span><code id="sale-code"></code><button type="button" id="copy-code">Copy</button></div>
     <p id="modal-note"></p>
     <div class="actions">
-      <a class="btn btn-primary btn-sm" id="checkout-go" href="#" target="_blank" rel="noopener">Continue to checkout</a>
+      <!-- Payhip buy buttons: payhip.js opens Payhip's checkout over this page (email, payment, then the download and access code) -->
+      <a class="btn btn-primary btn-sm payhip-buy-button" data-theme="none" data-product="zdYWK" data-pid="macro" href="https://payhip.com/b/zdYWK" target="_blank" rel="noopener" hidden>Continue to checkout</a>
+      <a class="btn btn-primary btn-sm payhip-buy-button" data-theme="none" data-product="SThaH" data-pid="controller" href="https://payhip.com/b/SThaH" target="_blank" rel="noopener" hidden>Continue to checkout</a>
+      <a class="btn btn-primary btn-sm payhip-buy-button" data-theme="none" data-product="pSFuG" data-pid="tweaks" href="https://payhip.com/b/pSFuG" target="_blank" rel="noopener" hidden>Continue to checkout</a>
+      <a class="btn btn-primary btn-sm payhip-buy-button" data-theme="none" data-product="PhsWn" data-pid="crosshair" href="https://payhip.com/b/PhsWn" target="_blank" rel="noopener" hidden>Continue to checkout</a>
+      <a class="btn btn-primary btn-sm payhip-buy-button" data-theme="none" data-product="lBVwX" data-pid="bundle" href="https://payhip.com/b/lBVwX" target="_blank" rel="noopener" hidden>Continue to checkout</a>
       <a class="btn btn-primary btn-sm" id="checkout-soon" href="https://www.youtube.com/@edogproductions" target="_blank" rel="noopener">Open YouTube</a>
       <button class="btn btn-ghost btn-sm" type="button" id="modal-close">Close</button>
     </div>
   </div>
 </div>
 
+<script type="text/javascript" src="https://payhip.com/payhip.js"></script>
+
 <script>
 // ---- Store settings: paste your links here --------------------------------------------
-// checkout: the Payhip product link for each item (payhip.com/b/xxxx). Empty = "opens soon" popup.
+// checkout: the Payhip product id for each item (the xxxx in payhip.com/b/xxxx). The buy buttons in the
+// popup markup above carry the same ids. Empty = "opens soon" popup.
 const STORE = {
   discord: "https://discord.gg/rudgnMrP4H",
-  checkout: { macro: "", controller: "", tweaks: "", crosshair: "", bundle: "" }
+  checkout: { macro: "zdYWK", controller: "SThaH", tweaks: "pSFuG", crosshair: "PhsWn", bundle: "lBVwX" }
 };
-// A real sale: Payhip charges the full price, and this coupon takes the percent off until it expires.
-// Make the Payhip coupon with the same code, percent and expiry date. After "ends" the site shows full prices.
-const SALE = { name: "Holiday sale", percent: 50, code: "HOLIDAY50", ends: "2027-02-01T00:00:00Z" };
+// A real sale: each Payhip product has the full price plus "Product is on sale" at half price, so Payhip's own
+// checkout shows the full price crossed out. After "ends" the site shows full prices: switch the Payhip sale off then too.
+const SALE = { name: "Holiday sale", percent: 50, ends: "2027-02-01T00:00:00Z" };
 
 // price = the full Payhip price
 const PRODUCTS = [
@@ -702,7 +705,7 @@ document.getElementById("grid").innerHTML = PRODUCTS.map(p => `
     <ul>${p.points.map(t => `<li>${CHECK}<span>${esc(t)}</span></li>`).join("")}</ul>
     <div class="foot">
       <div class="price">${priceHtml(p.price)}</div>
-      ${saleOn() ? `<span class="deal-note">${esc(SALE.name)} ends ${saleEndText()} · code <code>${esc(SALE.code)}</code></span>` : ""}
+      ${saleOn() ? `<span class="deal-note">${esc(SALE.name)} price until ${saleEndText()}</span>` : ""}
       <button class="buy" type="button" data-buy="${p.id}">${CART}Purchase</button>
     </div>
   </article>`).join("");
@@ -759,18 +762,10 @@ document.querySelectorAll(".filter").forEach(f => f.addEventListener("click", ()
   document.getElementById("bundle").hidden = !(want === "all" || want === "bundle");
 }));
 
-// buying: a checkout summary (full price, sale discount, total, sale code) that hands off to Payhip,
-// which shows the same full price and discount once the code is entered
+// buying: a checkout summary (full price, sale discount, total) that hands off to Payhip's checkout,
+// which shows the same sale price and asks for the buyer's email
 const modal = document.getElementById("modal");
 const $ = id => document.getElementById(id);
-function copyCode() {
-  const btn = $("copy-code");
-  const done = () => { btn.textContent = "Copied"; setTimeout(() => { btn.textContent = "Copy"; }, 1800); };
-  try {
-    navigator.clipboard.writeText(SALE.code).then(done, () => selectCode());
-  } catch { selectCode(); }
-}
-function selectCode() { const r = document.createRange(); r.selectNodeContents($("sale-code")); const s = getSelection(); s.removeAllRanges(); s.addRange(r); }
 function buy(id) {
   const p = byId(id), url = STORE.checkout[id], on = saleOn();
   $("modal-title").textContent = p.name;
@@ -781,22 +776,17 @@ function buy(id) {
   $("r-off-label").textContent = `${SALE.name} (${SALE.percent}% off)`;
   $("r-off").textContent = "-" + money2(p.price - salePrice(p.price));
   $("r-total").textContent = money2(salePrice(p.price));
-  $("sale-code").textContent = SALE.code;
-  $("code-row").hidden = !on;
-  $("checkout-go").hidden = !url;
+  const go = document.querySelector(`.payhip-buy-button[data-pid="${id}"]`);
+  document.querySelectorAll(".payhip-buy-button").forEach(a => { a.hidden = a !== go || !url; });
   $("checkout-soon").hidden = !!url;
-  if (url) $("checkout-go").href = url;
   $("modal-note").textContent = !url
     ? "Checkout for this app opens soon. Follow @edogproductions on YouTube to catch the launch."
-    : on ? `Paste ${SALE.code} in the coupon box on Payhip to get the sale price. Your download and access code appear the moment you pay.`
-         : "Your download and access code appear on Payhip the moment you pay.";
+    : "Enter your email at checkout. Your download and access code appear the moment you pay, and Payhip emails you a receipt with both.";
   modal.hidden = false;
-  if (on && url) copyCode();
-  (url ? $("checkout-go") : $("modal-close")).focus();
+  (url ? go : $("modal-close")).focus();
 }
 document.addEventListener("click", e => { const b = e.target.closest("[data-buy]"); if (b) buy(b.dataset.buy); });
-$("copy-code").addEventListener("click", copyCode);
-$("checkout-go").addEventListener("click", () => { modal.hidden = true; });
+document.querySelectorAll(".payhip-buy-button").forEach(a => a.addEventListener("click", () => { modal.hidden = true; }));
 $("modal-close").addEventListener("click", () => { modal.hidden = true; });
 modal.addEventListener("click", e => { if (e.target === modal) modal.hidden = true; });
 document.addEventListener("keydown", e => { if (e.key === "Escape") modal.hidden = true; });
