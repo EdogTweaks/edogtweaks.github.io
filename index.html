@@ -205,24 +205,69 @@ button { font: inherit; color: inherit; }
 .stat span { font: 600 11.5px/1 var(--font-mono); letter-spacing: 0.2em; color: var(--muted); text-transform: uppercase; }
 
 /* ---------- showcase ---------- */
-.showcase { padding-block: 44px 20px; display: grid; justify-items: center; gap: 18px; }
-.tabs { display: flex; flex-wrap: wrap; justify-content: center; gap: 4px; padding: 5px; border-radius: 14px; background: rgba(8, 15, 32, 0.7); border: 1px solid var(--line); }
+.showcase { padding-block: 44px 34px; display: grid; justify-items: center; gap: 26px; }
+.tabs { position: relative; display: flex; flex-wrap: wrap; justify-content: center; gap: 4px; padding: 5px; border-radius: 14px; background: rgba(8, 15, 32, 0.7); border: 1px solid var(--line); }
 .tab {
+  position: relative; z-index: 1;
   padding: 10px 16px; border-radius: 10px; border: 0; background: transparent; cursor: pointer;
   font: 700 12.5px/1 var(--font-display); font-stretch: 108%; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted);
-  transition: background .15s, color .15s;
+  transition: color .35s var(--ease);
 }
 .tab:hover { color: var(--fg); }
-.tab[aria-selected="true"] { color: var(--accent-ink); background: var(--tab-c, var(--accent)); box-shadow: 0 6px 22px color-mix(in srgb, var(--tab-c, var(--accent)) 45%, transparent); }
+.tab[aria-selected="true"] { color: var(--accent-ink); }
+/* the coloured highlight slides between tabs; its bottom line fills up while the previews cycle on their own */
+.tab-pill {
+  position: absolute; z-index: 0; top: 0; left: 0; width: 0; height: 0; border-radius: 10px; overflow: hidden; pointer-events: none;
+  background: var(--pill-c, var(--accent)); box-shadow: 0 6px 22px color-mix(in srgb, var(--pill-c, var(--accent)) 45%, transparent);
+  transition: transform .55s var(--ease), width .55s var(--ease), height .55s var(--ease), background-color .45s, box-shadow .45s;
+}
+.tab-pill::after {
+  content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 3px; background: rgba(4, 10, 24, 0.35);
+  transform: scaleX(0); transform-origin: left;
+}
+.tabs.cycling .tab-pill::after { animation: tabfill var(--cycle, 5s) linear forwards; }
+.tabs.paused .tab-pill::after { animation-play-state: paused; }
+@keyframes tabfill { to { transform: scaleX(1); } }
+/* smaller window that floats: bob up and down over a soft coloured glow and a shadow that breathes with it */
+.stage { position: relative; isolation: isolate; width: 100%; max-width: 780px; }
+.stage-glow {
+  position: absolute; inset: 8% 4% 4%; z-index: -1; border-radius: 50%; pointer-events: none;
+  background: radial-gradient(closest-side, color-mix(in srgb, var(--win-c, var(--accent)) 30%, transparent), transparent);
+  filter: blur(40px); transition: background .6s; animation: glow 6s ease-in-out infinite;
+}
+.stage-shadow {
+  width: 72%; height: 26px; margin: 24px auto 0; border-radius: 50%; pointer-events: none;
+  background: radial-gradient(closest-side, rgba(0, 0, 0, 0.65), transparent);
+  animation: shadowbob 6s ease-in-out infinite;
+}
+.floaty { animation: floaty 6s ease-in-out infinite; will-change: transform; }
+@keyframes floaty { 0%, 100% { transform: translateY(0) rotate(-0.35deg); } 50% { transform: translateY(-14px) rotate(0.35deg); } }
+@keyframes shadowbob { 0%, 100% { transform: scaleX(1); opacity: 1; } 50% { transform: scaleX(0.82); opacity: 0.55; } }
+@keyframes glow { 0%, 100% { opacity: 0.75; transform: scale(1); } 50% { opacity: 1; transform: scale(1.06); } }
 .window {
-  width: 100%; max-width: 1000px; border-radius: 16px; overflow: hidden;
+  position: relative; width: 100%; border-radius: 16px; overflow: hidden;
   border: 1px solid color-mix(in srgb, var(--win-c, var(--accent)) 45%, transparent);
   background: var(--bg-2);
   box-shadow: 0 30px 90px rgba(0, 0, 0, 0.6), 0 0 80px color-mix(in srgb, var(--win-c, var(--accent)) 18%, transparent);
-  transition: border-color .3s, box-shadow .3s;
+  transform: perspective(1400px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg));
+  transition: transform .6s var(--ease), border-color .45s, box-shadow .45s;
 }
-.window-shot { aspect-ratio: 1260 / 760; max-width: 100%; background: #0a1328; display: grid; place-items: center; }
-.window-shot img { width: 100%; height: 100%; object-fit: contain; }
+.window.tilting { transition: transform .25s ease-out, border-color .45s, box-shadow .45s; }
+.window-shot { position: relative; overflow: hidden; aspect-ratio: 1260 / 760; max-width: 100%; background: #0a1328; display: grid; place-items: center; }
+.window-shot img { width: 100%; height: 100%; object-fit: contain; transition: opacity .3s var(--ease), transform .55s var(--ease), filter .3s; }
+.window-shot img.out { opacity: 0; transform: scale(0.96) translateY(10px); filter: blur(8px); transition-duration: .2s; }
+/* a band of light sweeps across each time the preview changes */
+.window-shot::after {
+  content: ""; position: absolute; inset: 0; pointer-events: none;
+  background: linear-gradient(105deg, transparent 35%, rgba(255, 255, 255, 0.14) 50%, transparent 65%);
+  transform: translateX(-120%);
+}
+.window-shot.sweep::after { animation: sweep 1s var(--ease); }
+@keyframes sweep { to { transform: translateX(120%); } }
+@media (prefers-reduced-motion: reduce) {
+  .floaty, .stage-shadow, .stage-glow, .window-shot.sweep::after, .tabs.cycling .tab-pill::after { animation: none; }
+  .window-shot img, .window-shot img.out { transition: none; transform: none; filter: none; }
+}
 .window-bar {
   display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px 20px;
   padding: 14px 18px; border-top: 1px solid var(--line); background: rgba(5, 10, 22, 0.9);
@@ -232,11 +277,21 @@ button { font: inherit; color: inherit; }
 .window-bar .right { display: flex; flex-wrap: wrap; align-items: center; gap: 14px; }
 .window-bar .tagline { color: var(--muted); font-size: 14px; }
 .buy-mini {
-  display: inline-flex; align-items: center; gap: 7px; padding: 8px 14px; border-radius: 9px; border: 0; cursor: pointer;
+  position: relative; overflow: hidden;
+  display: inline-flex; align-items: center; gap: 9px; padding: 13px 22px; border-radius: 12px; border: 0; cursor: pointer;
   background: var(--win-c, var(--accent)); color: var(--accent-ink);
-  font: 800 12.5px/1 var(--font-display); letter-spacing: 0.08em; text-transform: uppercase;
+  font: 800 15px/1 var(--font-display); letter-spacing: 0.08em; text-transform: uppercase;
+  box-shadow: 0 8px 26px color-mix(in srgb, var(--win-c, var(--accent)) 45%, transparent), inset 0 1px 0 rgba(255, 255, 255, 0.4);
+  transition: transform .3s var(--ease), box-shadow .3s, filter .2s, background-color .45s;
 }
-.buy-mini svg { width: 15px; height: 15px; }
+.buy-mini:hover { transform: translateY(-2px); filter: brightness(1.08); box-shadow: 0 12px 34px color-mix(in srgb, var(--win-c, var(--accent)) 60%, transparent), inset 0 1px 0 rgba(255, 255, 255, 0.4); }
+.buy-mini::after {
+  content: ""; position: absolute; inset: 0; pointer-events: none;
+  background: linear-gradient(105deg, transparent 30%, rgba(255, 255, 255, 0.5) 50%, transparent 70%);
+  transform: translateX(-130%); transition: transform .8s var(--ease);
+}
+.buy-mini:hover::after { transform: translateX(130%); }
+.buy-mini svg { width: 19px; height: 19px; }
 
 /* ---------- sections ---------- */
 section { scroll-margin-top: 96px; }
@@ -525,8 +580,11 @@ footer { margin-top: 90px; border-top: 1px solid var(--line); background: rgba(4
 
   <section class="wrap showcase" aria-label="App previews">
     <div class="tabs reveal" style="--d:6" role="tablist" id="tabs"></div>
-    <div class="window reveal" style="--d:7" id="window">
-      <div class="window-shot"><img id="shot" alt="" width="1260" height="760"></div>
+    <div class="stage reveal" style="--d:7" id="stage">
+     <div class="stage-glow" aria-hidden="true"></div>
+     <div class="floaty">
+     <div class="window" id="window" data-tilt="4">
+      <div class="window-shot" id="shot-frame"><img id="shot" alt="" width="1260" height="760"></div>
       <div class="window-bar">
         <div class="name"><i></i><span id="shot-name"></span></div>
         <div class="right">
@@ -537,6 +595,9 @@ footer { margin-top: 90px; border-top: 1px solid var(--line); background: rgba(4
           </button>
         </div>
       </div>
+     </div>
+     </div>
+     <div class="stage-shadow" aria-hidden="true"></div>
     </div>
   </section>
 
@@ -848,29 +909,73 @@ const gameHtml = (dupe) => GAMES.map(g =>
 document.getElementById("games").innerHTML = gameHtml(false) + gameHtml(true);
 
 // showcase tabs
-const tabs = document.getElementById("tabs"), win = document.getElementById("window"), shot = document.getElementById("shot");
-tabs.innerHTML = PRODUCTS.map((p, i) =>
+const tabs = document.getElementById("tabs"), stage = document.getElementById("stage"), shot = document.getElementById("shot"), shotFrame = document.getElementById("shot-frame");
+tabs.innerHTML = `<span class="tab-pill" aria-hidden="true"></span>` + PRODUCTS.map((p, i) =>
   `<button class="tab" role="tab" type="button" id="tab-${p.id}" data-id="${p.id}" aria-selected="${i === 0}" style="--tab-c:${p.color}">${esc(p.name.replace("Edog ", ""))}</button>`).join("");
-let current = "macro";
-function show(id) {
+const pill = tabs.querySelector(".tab-pill");
+let current = "macro", swapId = 0;
+// slide the coloured highlight under the selected tab (jump without animating on first paint / resize)
+function placePill(animate) {
+  const t = document.getElementById("tab-" + current);
+  if (!animate) pill.style.transition = "none";
+  pill.style.width = t.offsetWidth + "px"; pill.style.height = t.offsetHeight + "px";
+  pill.style.transform = `translate(${t.offsetLeft}px, ${t.offsetTop}px)`;
+  pill.style.setProperty("--pill-c", byId(current).color);
+  if (!animate) { void pill.offsetWidth; pill.style.transition = ""; }
+}
+function show(id, first) {
   const p = byId(id); current = id;
   tabs.querySelectorAll(".tab").forEach(t => t.setAttribute("aria-selected", String(t.dataset.id === id)));
-  win.style.setProperty("--win-c", p.color);
-  shot.src = SHOTS[id];
-  shot.alt = p.name + " app screenshot";
+  placePill(!first);
+  stage.style.setProperty("--win-c", p.color);
   document.getElementById("shot-name").textContent = p.name;
   document.getElementById("shot-tag").textContent = p.tagline;
   document.getElementById("shot-price").textContent = "Buy " + money(salePrice(p.price));
+  const my = ++swapId, alt = p.name + " app screenshot";
+  if (first || reduceMotion) { shot.src = SHOTS[id]; shot.alt = alt; return; }
+  // old screenshot drifts out, the new one fades up once it has loaded, then a band of light sweeps across
+  shot.classList.add("out");
+  setTimeout(() => {
+    if (my !== swapId) return;
+    const img = new Image(); img.src = SHOTS[id];
+    (img.decode ? img.decode() : Promise.resolve()).catch(() => {}).then(() => {
+      if (my !== swapId) return;
+      shot.src = SHOTS[id]; shot.alt = alt; shot.classList.remove("out");
+      shotFrame.classList.remove("sweep"); void shotFrame.offsetWidth; shotFrame.classList.add("sweep");
+    });
+  }, 200);
 }
-tabs.addEventListener("click", e => { const t = e.target.closest(".tab"); if (t) show(t.dataset.id); });
+// the previews flip through the apps on their own (the tab's bottom line fills up meanwhile)
+// until the visitor picks one; they pause while hovered or off screen
+let autoCycle = !reduceMotion;
+const ids = PRODUCTS.map(p => p.id);
+function restartFill() { tabs.classList.remove("cycling"); void pill.offsetWidth; if (autoCycle) tabs.classList.add("cycling"); }
+function stopCycle() { autoCycle = false; tabs.classList.remove("cycling", "paused"); }
+pill.addEventListener("animationend", e => {
+  if (e.animationName !== "tabfill" || !autoCycle) return;
+  show(ids[(ids.indexOf(current) + 1) % ids.length]); restartFill();
+});
+let hovering = false, onScreen = false;
+const syncPause = () => tabs.classList.toggle("paused", hovering || !onScreen);
+[stage, tabs].forEach(el => {
+  el.addEventListener("pointerenter", () => { hovering = true; syncPause(); });
+  el.addEventListener("pointerleave", () => { hovering = false; syncPause(); });
+});
+if ("IntersectionObserver" in window) {
+  new IntersectionObserver(([e]) => { onScreen = e.isIntersecting; syncPause(); }, { threshold: 0.35 }).observe(stage);
+} else onScreen = true;
+tabs.addEventListener("click", e => { const t = e.target.closest(".tab"); if (t) { stopCycle(); show(t.dataset.id); } });
 tabs.addEventListener("keydown", e => {
   if (e.key !== "ArrowRight" && e.key !== "ArrowLeft") return;
-  const ids = PRODUCTS.map(p => p.id), i = ids.indexOf(current);
+  const i = ids.indexOf(current);
   const next = ids[(i + (e.key === "ArrowRight" ? 1 : ids.length - 1)) % ids.length];
-  show(next); document.getElementById("tab-" + next).focus();
+  stopCycle(); show(next); document.getElementById("tab-" + next).focus();
 });
-show("macro");
-document.getElementById("shot-buy").addEventListener("click", () => buy(current));
+show("macro", true); syncPause(); restartFill();
+addEventListener("resize", () => placePill(false));
+if (document.fonts) document.fonts.ready.then(() => placePill(false));
+addEventListener("load", () => Object.values(SHOTS).forEach(src => { const i = new Image(); i.src = src; }));
+document.getElementById("shot-buy").addEventListener("click", () => { stopCycle(); buy(current); });
 
 // filters
 document.querySelectorAll(".filter").forEach(f => f.addEventListener("click", () => {
