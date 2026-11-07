@@ -1,0 +1,7 @@
+{
+  "_readme": "Read by the Edog apps on start. Raise a version (and its url) after uploading a new build and every older copy shows an Update available prompt.",
+  "macro":      { "version": "1.4.0", "url": "https://github.com/EdogTweaks/edogtweaks.github.io/releases/download/apps-2026-11/Edog-Macro-v1.4.0-portable.zip", "notes": "" },
+  "controller": { "version": "1.4.0", "url": "https://github.com/EdogTweaks/edogtweaks.github.io/releases/download/apps-2026-11/Edog-Controller-Macro-v1.4.0-portable.zip", "notes": "" },
+  "tweaks":     { "version": "1.2.0", "url": "https://github.com/EdogTweaks/edogtweaks.github.io/releases/download/apps-2026-11/Edog-Tweaks-v1.2.0-portable.zip", "notes": "" },
+  "crosshair":  { "version": "1.2.0", "url": "https://github.com/EdogTweaks/edogtweaks.github.io/releases/download/apps-2026-11/Edog-Crosshair-v1.2.0-portable.zip", "notes": "" }
+}
