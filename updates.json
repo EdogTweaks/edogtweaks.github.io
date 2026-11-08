@@ -1,7 +1,8 @@
 {
-  "_readme": "Read by the Edog apps on start. Raise a version (and its url) after uploading a new build and every older copy shows an Update available prompt.",
-  "macro":      { "version": "1.4.1", "url": "https://github.com/EdogTweaks/edogtweaks.github.io/releases/download/apps-2026-11/Edog-Macro-v1.4.1-portable.zip", "notes": "" },
-  "controller": { "version": "1.4.1", "url": "https://github.com/EdogTweaks/edogtweaks.github.io/releases/download/apps-2026-11/Edog-Controller-Macro-v1.4.1-portable.zip", "notes": "" },
-  "tweaks":     { "version": "1.2.1", "url": "https://github.com/EdogTweaks/edogtweaks.github.io/releases/download/apps-2026-11/Edog-Tweaks-v1.2.1-portable.zip", "notes": "" },
-  "crosshair":  { "version": "1.2.1", "url": "https://github.com/EdogTweaks/edogtweaks.github.io/releases/download/apps-2026-11/Edog-Crosshair-v1.2.1-portable.zip", "notes": "" }
+  "_readme": "Read by the Edog apps on start and by the Safe to Run page. After a release: upload the new zips, raise version/url, set sha256, re-run the scans, then update scans and virustotal. Older copies then show the Update available prompt.",
+  "scans": { "date": "November 8, 2026", "defenderSignatures": "1.463.191.0" },
+  "macro":      { "name": "Edog Macro", "version": "1.4.1", "url": "https://github.com/EdogTweaks/edogtweaks.github.io/releases/download/apps-2026-11/Edog-Macro-v1.4.1-portable.zip", "notes": "", "sha256": "A8C3219585E03281AE151958C69478F2D49F4705D832BF563897948CF2BB8C7C", "virustotal": "" },
+  "controller": { "name": "Edog Controller Macro", "version": "1.4.1", "url": "https://github.com/EdogTweaks/edogtweaks.github.io/releases/download/apps-2026-11/Edog-Controller-Macro-v1.4.1-portable.zip", "notes": "", "sha256": "4C647B6FD0277CF1C0DAE46BA2A0E2F0DD80DE3C7E573D62BA7CFAB11AC1AEE8", "virustotal": "" },
+  "tweaks":     { "name": "Edog Tweaks", "version": "1.2.1", "url": "https://github.com/EdogTweaks/edogtweaks.github.io/releases/download/apps-2026-11/Edog-Tweaks-v1.2.1-portable.zip", "notes": "", "sha256": "B64D1717F0C8F24522C461CBE49A348F0BCD3184733D22F749B4424DD1927465", "virustotal": "" },
+  "crosshair":  { "name": "Edog Crosshair", "version": "1.2.1", "url": "https://github.com/EdogTweaks/edogtweaks.github.io/releases/download/apps-2026-11/Edog-Crosshair-v1.2.1-portable.zip", "notes": "", "sha256": "BABCFCAD62BFEBB3CE186C1F723235A4957AAD8DDC23EA4A2BE46180801CF3E8", "virustotal": "" }
 }
