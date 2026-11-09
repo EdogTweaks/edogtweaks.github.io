@@ -509,15 +509,31 @@ footer { margin-top: 90px; border-top: 1px solid var(--line); background: rgba(4
 .receipt .total { padding-top: 9px; border-top: 1px solid var(--line); color: var(--fg); font-weight: 700; }
 .receipt .total b { font: 800 22px/1 var(--font-display); color: var(--fg); }
 
-/* console guides: a row under the apps and the bundle, with an image instead of a video */
-.console { margin-top: 46px; }
-.console-head { display: grid; gap: 6px; margin-bottom: 20px; }
-.console-head h3 { margin: 0; font: 900 clamp(24px, 3.2vw, 32px)/1.1 var(--font-display); font-stretch: 110%; }
-.console-head p { margin: 0; color: var(--muted); font-size: 16px; }
-.grid.console-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-.card-media img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform .9s var(--ease); }
-.card:hover .card-media img { transform: scale(1.05); }
-@media (max-width: 600px) { .grid.console-grid { grid-template-columns: minmax(0, 1fr); } }
+/* console products: a row under the apps and the bundle, art on top, big price, full-width button */
+.console { margin-top: 56px; }
+.console-head { display: grid; justify-items: center; text-align: center; gap: 8px; margin-bottom: 24px; }
+.console-head h3 { margin: 0; font: 900 clamp(26px, 3.6vw, 38px)/1.1 var(--font-display); font-stretch: 110%; }
+.console-head p { margin: 0; max-width: 560px; color: var(--muted); font-size: 16px; }
+.grid.console-grid { grid-template-columns: repeat(2, minmax(0, 360px)); justify-content: center; gap: 20px; }
+.console-card { padding: 0; gap: 0; overflow: hidden; background: linear-gradient(180deg, color-mix(in srgb, var(--c) 6%, #0a0d20) 0%, #080b1a 100%); border-color: color-mix(in srgb, var(--c) 32%, var(--line)); }
+.console-art { aspect-ratio: 2 / 1; overflow: hidden; border-bottom: 1px solid color-mix(in srgb, var(--c) 30%, transparent); }
+.console-art img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform .9s var(--ease); }
+.console-card:hover .console-art img { transform: scale(1.05); }
+.console-body { padding: 20px 24px 24px; display: flex; flex-direction: column; gap: 14px; flex: 1; }
+.console-body h3 { margin: 0; color: var(--c); font: 800 23px/1.15 var(--font-display); font-stretch: 104%; }
+.console-price { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 10px; }
+.console-price b { font: 900 36px/1 var(--font-display); color: var(--fg); }
+.console-price s { color: var(--muted); font-size: 16px; }
+.console-pill { padding: 5px 10px; border-radius: 99px; background: rgba(61, 220, 151, 0.14); color: var(--good); font: 700 12.5px/1 var(--font-body); }
+.console-terms { margin-top: -6px; color: var(--muted); font-size: 13.5px; }
+.console-body p { margin: 0; color: var(--muted); font-size: 15px; line-height: 1.5; }
+.console-body ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 9px; }
+.console-body li { display: grid; grid-template-columns: 18px 1fr; gap: 9px; font-size: 14.5px; line-height: 1.4; color: #dfe7f6; }
+.console-body li svg { width: 16px; height: 16px; margin-top: 2px; color: var(--c); }
+.console-buy { margin-top: auto; width: 100%; padding: 15px 18px; font-size: 14px; border-radius: 99px; color: #fff; background: linear-gradient(90deg, var(--c), var(--c2)); box-shadow: 0 10px 28px color-mix(in srgb, var(--c) 35%, transparent); display: inline-flex; align-items: center; justify-content: center; gap: 9px; border: 0; cursor: pointer; font-family: var(--font-display); font-weight: 800; letter-spacing: 0.04em; transition: transform .15s, filter .15s; }
+.console-buy:hover { transform: translateY(-1px); filter: brightness(1.1); }
+.console-buy svg { width: 17px; height: 17px; }
+@media (max-width: 760px) { .grid.console-grid { grid-template-columns: minmax(0, 1fr); max-width: 420px; margin-inline: auto; } }
 
 /* link to the Safe to Run page */
 .safe-teaser {
@@ -688,8 +704,8 @@ footer { margin-top: 90px; border-top: 1px solid var(--line); background: rgba(4
     </div>
   <div class="console" id="console">
       <div class="console-head reveal">
-        <h3>Console Guides</h3>
-        <p>On PS5 or Xbox? These are PDF guides, not apps, so there's nothing to install on your console.</p>
+        <h3>Console Optimization</h3>
+        <p>For PS5 and Xbox. You get a step-by-step PDF, not an app, so there's nothing to install on your console.</p>
       </div>
       <div class="grid console-grid" id="console-grid"></div>
     </div>
@@ -778,8 +794,8 @@ footer { margin-top: 90px; border-top: 1px solid var(--line); background: rgba(4
         <div class="ans"><p>Xbox controllers, PS4 DualShock 4 and PS5 DualSense, over USB or Bluetooth, on a Windows PC. It uses the free ViGEmBus driver, and the installer offers to set it up if you don't have it yet. It doesn't run on a console.</p></div>
       </details>
       <details>
-        <summary>What are the console guides?<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></summary>
-        <div class="ans"><p>They're PDF guides for PS5 and Xbox that walk you through the settings on your console, TV and network, plus Fortnite's own settings. There's no app or access code, so read it on your phone or PC while you go through your console's menus. Nothing can make delay or ping zero, and each guide explains what you can realistically get.</p></div>
+        <summary>What do I get with PS5 or Xbox Optimization?<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></summary>
+        <div class="ans"><p>A step-by-step PDF that walks you through the settings on your console, TV and network, plus Fortnite's own settings. There's no app or access code, so read it on your phone or PC while you go through your console's menus. Nothing can make delay or ping zero, and the PDF explains what you can realistically get.</p></div>
       </details>
       <details>
         <summary>Will Edog Tweaks mess up my PC?<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></summary>
@@ -907,12 +923,12 @@ const PRODUCTS = [
     points: ["41 built-in crosshairs, plus your own designs", "Layer designer with fire, aim and reload animations", "Hide it while aiming or swap with a hotkey", "Share codes so friends can copy your crosshair"] }
 ];
 const CONSOLE = [
-  { id: "ps5", cat: "console", name: "Edog PS5 Optimization Guide", sub: "PDF guide · 41 pages", price: 20, color: "#4f8dff", tag: "PS5", image: "assets/console-ps5.jpg", guide: true,
-    blurb: "Every PS5 setting for the most FPS, lowest delay and lowest ping you can get, in the order that matters most.",
-    points: ["Performance Mode, Video Output and 120 FPS in Fortnite", "TV, controller and headset settings that cut delay", "Ethernet, Wi-Fi, NAT Type 3 and lag spike fixes", "Fortnite settings, troubleshooting and a final checklist"] },
-  { id: "xbox", cat: "console", name: "Edog Xbox Optimization Guide", sub: "PDF guide · 47 pages", price: 20, color: "#35c759", tag: "Xbox", image: "assets/console-xbox.jpg", guide: true,
-    blurb: "Every Xbox setting for the most FPS, lowest delay and lowest ping you can get, in the order that matters most.",
-    points: ["120 Hz, video settings and 120 FPS in Fortnite", "TV, controller and headset settings that cut delay", "Ethernet, Wi-Fi, NAT type, QoS and lag spike fixes", "Fortnite settings, troubleshooting and a final checklist"] }
+  { id: "ps5", cat: "console", name: "Edog PS5 Optimization", price: 20, color: "#5b93ff", color2: "#6a5cff", image: "assets/art-ps5.jpg", guide: true, pages: 41,
+    blurb: "Set up your PS5 for the most FPS, lowest delay and lowest ping it can reach.",
+    points: ["Performance Mode and 120 FPS", "TV, controller and headset settings", "Ethernet, Wi-Fi and NAT Type fixes", "Fortnite settings and final checklist"] },
+  { id: "xbox", cat: "console", name: "Edog Xbox Optimization", price: 20, color: "#2fd46f", color2: "#10a884", image: "assets/art-xbox.jpg", guide: true, pages: 47,
+    blurb: "Set up your Xbox for the most FPS, lowest delay and lowest ping it can reach.",
+    points: ["120 Hz and 120 FPS setup", "TV, controller and headset settings", "Ethernet, Wi-Fi, NAT and QoS fixes", "Fortnite settings and final checklist"] }
 ];
 const SHOTS = { macro: "assets/shot-macro.jpg", controller: "assets/shot-controller.jpg", tweaks: "assets/shot-tweaks.jpg", crosshair: "assets/shot-crosshair.jpg" };
 const BUNDLE = { id: "bundle", name: "Edog Complete", price: 120 };
@@ -948,7 +964,7 @@ const priceHtml = n => saleOn()
   : `<b>${money(n)}</b><small>one-time</small>`;
 const cardHtml = (p, i) => `
   <article class="card reveal" data-cat="${p.cat}" data-tilt="6" style="--c:${p.color};--d:${i}">
-    <div class="card-media">${p.image ? `<img src="${p.image}" width="1280" height="720" loading="lazy" alt="${esc(p.name)} cover">` : `<video muted loop playsinline preload="none" disablepictureinpicture poster="assets/promo-${p.id}.jpg" data-src="assets/promo-${p.id}.mp4" aria-label="${esc(p.name)} promo video"></video>`}</div>
+    <div class="card-media"><video muted loop playsinline preload="none" disablepictureinpicture poster="assets/promo-${p.id}.jpg" data-src="assets/promo-${p.id}.mp4" aria-label="${esc(p.name)} promo video"></video></div>
     <div class="card-top"><img src="assets/logo-${p.id}.png" alt="" width="52" height="52">
       <div class="tags"><span class="tag">${esc(p.tag)}</span>${saleOn() ? `<span class="tag sale">${SALE.percent}% off</span>` : ""}</div></div>
     <h3>${esc(p.name)}</h3>
@@ -962,7 +978,19 @@ const cardHtml = (p, i) => `
     </div>
   </article>`;
 document.getElementById("grid").innerHTML = PRODUCTS.map(cardHtml).join("");
-document.getElementById("console-grid").innerHTML = CONSOLE.map(cardHtml).join("");
+const consoleCard = (p, i) => `
+  <article class="card console-card reveal" data-cat="${p.cat}" data-tilt="5" style="--c:${p.color};--c2:${p.color2};--d:${i}">
+    <div class="console-art"><img src="${p.image}" width="1280" height="640" loading="lazy" alt=""></div>
+    <div class="console-body">
+      <h3>${esc(p.name)}</h3>
+      <div class="console-price">${saleOn() ? `<b>${money(salePrice(p.price))}</b><s>${money(p.price)}</s><span class="console-pill">${SALE.percent}% OFF</span>` : `<b>${money(p.price)}</b>`}</div>
+      <span class="console-terms">One-time payment · ${p.pages}-page PDF${saleOn() ? ` · ${esc(SALE.name)} until ${saleEndText()}` : ""}</span>
+      <p>${esc(p.blurb)}</p>
+      <ul>${p.points.map(s => `<li>${CHECK}<span>${esc(s)}</span></li>`).join("")}</ul>
+      <button class="console-buy" type="button" data-buy="${p.id}">Buy Now<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+    </div>
+  </article>`;
+document.getElementById("console-grid").innerHTML = CONSOLE.map(consoleCard).join("");
 
 const separate = PRODUCTS.reduce((s, p) => s + salePrice(p.price), 0);
 document.getElementById("bundle-price").textContent = money(salePrice(BUNDLE.price));
