@@ -279,9 +279,9 @@ button { font: inherit; color: inherit; }
 .window-bar .tagline { color: var(--muted); font-size: 14px; }
 .buy-mini {
   position: relative; overflow: hidden;
-  display: inline-flex; align-items: center; gap: 9px; padding: 13px 22px; border-radius: 12px; border: 0; cursor: pointer;
-  background: var(--win-c, var(--accent)); color: var(--accent-ink);
-  font: 800 15px/1 var(--font-display); letter-spacing: 0.08em; text-transform: uppercase;
+  display: inline-flex; align-items: center; gap: 9px; padding: 13px 24px; border-radius: 99px; border: 0; cursor: pointer;
+  background: linear-gradient(90deg, color-mix(in srgb, var(--win-c, var(--accent)) 72%, #06122a), color-mix(in srgb, var(--win-c, var(--accent)) 55%, #4a2cff)); color: #fff;
+  font: 800 15px/1 var(--font-display); letter-spacing: 0.04em;
   box-shadow: 0 8px 26px color-mix(in srgb, var(--win-c, var(--accent)) 45%, transparent), inset 0 1px 0 rgba(255, 255, 255, 0.4);
   transition: transform .3s var(--ease), box-shadow .3s, filter .2s, background-color .45s;
 }
@@ -390,17 +390,32 @@ section { scroll-margin-top: 96px; }
 .tags { display: grid; justify-items: end; gap: 6px; }
 .tag.sale { color: var(--good); background: color-mix(in srgb, var(--good) 12%, transparent); border-color: color-mix(in srgb, var(--good) 35%, transparent); }
 .deal-note { margin-top: -6px; font-size: 13px; color: var(--muted); }
-.buy {
+.buy-stack { display: grid; gap: 10px; }
+.buy, .add-cart {
   width: 100%; display: inline-flex; align-items: center; justify-content: center; gap: 9px;
-  padding: 13px 16px; border-radius: 11px; border: 0; cursor: pointer;
-  background: var(--c); color: var(--accent-ink);
-  font: 800 13.5px/1 var(--font-display); font-stretch: 108%; letter-spacing: 0.1em; text-transform: uppercase;
-  box-shadow: 0 8px 24px color-mix(in srgb, var(--c) 30%, transparent), inset 0 1px 0 rgba(255, 255, 255, 0.35);
-  transition: transform .15s, filter .15s;
-  position: relative; overflow: hidden;
+  padding: 15px 18px; border-radius: 99px; cursor: pointer;
+  font: 800 14px/1 var(--font-display); letter-spacing: 0.04em;
+  transition: transform .15s, filter .15s, background .15s, border-color .15s;
 }
-.buy:hover { transform: translateY(-1px); filter: brightness(1.08); }
-.buy svg { width: 17px; height: 17px; }
+.buy {
+  position: relative; overflow: hidden; border: 0; color: #fff;
+  background: linear-gradient(90deg, var(--b1, var(--c)), var(--b2, var(--c)));
+  box-shadow: 0 10px 28px color-mix(in srgb, var(--b1, var(--c)) 38%, transparent);
+}
+.buy:hover { transform: translateY(-1px); filter: brightness(1.1); }
+.buy svg, .add-cart svg { width: 17px; height: 17px; flex: none; }
+.buy svg.arrow { transition: transform .35s var(--ease); }
+.buy:hover svg.arrow { transform: translateX(4px); }
+.add-cart { background: color-mix(in srgb, var(--c) 7%, transparent); border: 1px solid color-mix(in srgb, var(--c) 42%, transparent); color: var(--c); }
+.add-cart:hover { transform: translateY(-1px); background: color-mix(in srgb, var(--c) 15%, transparent); border-color: var(--c); }
+.add-cart.added { color: var(--good); border-color: var(--good); background: color-mix(in srgb, var(--good) 12%, transparent); }
+/* cart button in the nav; Payhip's own cart opens from it */
+.nav-actions { display: flex; align-items: center; gap: 8px; }
+.nav-cart { width: 40px; height: 40px; flex: none; display: grid; place-items: center; border-radius: 50%; color: var(--fg); background: rgba(255, 255, 255, 0.04); border: 1px solid var(--line-2); transition: background .15s, border-color .15s; }
+.nav-cart:hover { background: rgba(60, 200, 255, 0.14); border-color: var(--accent); }
+.nav-cart svg { width: 19px; height: 19px; }
+/* the page is dark-mode, so without this the browser paints Payhip's cart frames with a solid white box */
+iframe[id^="payhip-"], iframe[class*="payhip-"] { color-scheme: light; }
 
 .bundle {
   --c: var(--accent);
@@ -530,9 +545,7 @@ footer { margin-top: 90px; border-top: 1px solid var(--line); background: rgba(4
 .console-body ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 9px; }
 .console-body li { display: grid; grid-template-columns: 18px 1fr; gap: 9px; font-size: 14.5px; line-height: 1.4; color: #dfe7f6; }
 .console-body li svg { width: 16px; height: 16px; margin-top: 2px; color: var(--c); }
-.console-buy { margin-top: auto; width: 100%; padding: 15px 18px; font-size: 14px; border-radius: 99px; color: #fff; background: linear-gradient(90deg, var(--c), var(--c2)); box-shadow: 0 10px 28px color-mix(in srgb, var(--c) 35%, transparent); display: inline-flex; align-items: center; justify-content: center; gap: 9px; border: 0; cursor: pointer; font-family: var(--font-display); font-weight: 800; letter-spacing: 0.04em; transition: transform .15s, filter .15s; }
-.console-buy:hover { transform: translateY(-1px); filter: brightness(1.1); }
-.console-buy svg { width: 17px; height: 17px; }
+.console-body .buy-stack { margin-top: auto; }
 @media (max-width: 760px) { .grid.console-grid { grid-template-columns: minmax(0, 1fr); max-width: 420px; margin-inline: auto; } }
 
 /* link to the Safe to Run page */
@@ -592,10 +605,13 @@ footer { margin-top: 90px; border-top: 1px solid var(--line); background: rgba(4
       <a href="/safe">Safe to Run</a>
       <a href="/about">About</a>
     </div>
-    <a class="btn btn-primary btn-sm" id="nav-cta" href="#products" data-jump="products">
+    <div class="nav-actions">
+      <a class="nav-cart payhip-open-cart-button" href="#" aria-label="Open cart" title="Cart"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="20" r="1.4"/><circle cx="18" cy="20" r="1.4"/><path d="M2.5 3h3l2.6 12.2a1.6 1.6 0 0 0 1.6 1.3h8.2a1.6 1.6 0 0 0 1.6-1.2L21.5 7H6.4"/></svg></a>
+      <a class="btn btn-primary btn-sm" id="nav-cta" href="#products" data-jump="products">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 4 14h7l-1 8 9-12h-7z"/></svg>
       <span>Shop apps</span>
-    </a>
+      </a>
+    </div>
   </nav>
 </div>
 
@@ -695,10 +711,10 @@ footer { margin-top: 90px; border-top: 1px solid var(--line); background: rgba(4
         <div class="bundle-buy">
           <div class="price"><b id="bundle-price"></b><s id="bundle-was"></s><span class="off" id="bundle-off" hidden></span></div>
           <span class="fine" id="bundle-note">One payment. One access code unlocks all four apps.</span>
-          <button class="buy" type="button" data-buy="bundle">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="20" r="1.4"/><circle cx="18" cy="20" r="1.4"/><path d="M2.5 3h3l2.6 12.2a1.6 1.6 0 0 0 1.6 1.3h8.2a1.6 1.6 0 0 0 1.6-1.2L21.5 7H6.4"/></svg>
-            Get the bundle
-          </button>
+          <div class="buy-stack">
+            <button class="buy" type="button" data-buy="bundle" style="--b1:#2a9dff;--b2:#6a5cff">Purchase<svg class="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+            <a class="add-cart payhip-add-to-cart-button" style="--c:#3cc8ff" data-theme="none" data-product="lBVwX" href="https://payhip.com/b/lBVwX"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="20" r="1.4"/><circle cx="18" cy="20" r="1.4"/><path d="M2.5 3h3l2.6 12.2a1.6 1.6 0 0 0 1.6 1.3h8.2a1.6 1.6 0 0 0 1.6-1.2L21.5 7H6.4"/></svg><span>Add to Cart</span></a>
+          </div>
         </div>
       </div>
     </div>
@@ -877,6 +893,7 @@ footer { margin-top: 90px; border-top: 1px solid var(--line); background: rgba(4
   </div>
 </div>
 
+<script>window.PayhipConfig = { enableCart: true, cart: { position: "bottom-right", displayLauncherOnPageLoad: true, launcherBackground: "#2a6cff", checkoutButtonBackground: "#2a6cff" } };</script>
 <script type="text/javascript" src="https://payhip.com/payhip.js"></script>
 <script src="assets/lenis.min.js"></script>
 
@@ -922,11 +939,12 @@ const PRODUCTS = [
     tagline: "41 crosshairs plus a full designer",
     points: ["41 built-in crosshairs, plus your own designs", "Layer designer with fire, aim and reload animations", "Hide it while aiming or swap with a hotkey", "Share codes so friends can copy your crosshair"] }
 ];
+const BTN = { macro: ["#2a9dff", "#2b62ff"], controller: ["#8f6bff", "#6a3cff"], tweaks: ["#14b981", "#0d9488"], crosshair: ["#f0509a", "#b44dff"], ps5: ["#3f7dff", "#6a4cff"], xbox: ["#16b85c", "#0f9d7f"] };
 const CONSOLE = [
-  { id: "ps5", cat: "console", name: "Edog PS5 Optimization", price: 20, color: "#5b93ff", color2: "#6a5cff", image: "assets/art-ps5.jpg", guide: true, pages: 41,
+  { id: "ps5", cat: "console", name: "Edog PS5 Optimization", price: 20, color: "#5b93ff", image: "assets/art-3d-ps5.jpg", guide: true, pages: 41,
     blurb: "Set up your PS5 for the most FPS, lowest delay and lowest ping it can reach.",
     points: ["Performance Mode and 120 FPS", "TV, controller and headset settings", "Ethernet, Wi-Fi and NAT Type fixes", "Fortnite settings and final checklist"] },
-  { id: "xbox", cat: "console", name: "Edog Xbox Optimization", price: 20, color: "#2fd46f", color2: "#10a884", image: "assets/art-xbox.jpg", guide: true, pages: 47,
+  { id: "xbox", cat: "console", name: "Edog Xbox Optimization", price: 20, color: "#2fd46f", image: "assets/art-3d-xbox.jpg", guide: true, pages: 47,
     blurb: "Set up your Xbox for the most FPS, lowest delay and lowest ping it can reach.",
     points: ["120 Hz and 120 FPS setup", "TV, controller and headset settings", "Ethernet, Wi-Fi, NAT and QoS fixes", "Fortnite settings and final checklist"] }
 ];
@@ -962,6 +980,10 @@ const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;",
 const priceHtml = n => saleOn()
   ? `<b>${money(salePrice(n))}</b><s>${money(n)}</s><span class="off">-${SALE.percent}%</span>`
   : `<b>${money(n)}</b><small>one-time</small>`;
+const buyButtons = p => `<div class="buy-stack">
+        <button class="buy" type="button" data-buy="${p.id}" style="--b1:${BTN[p.id][0]};--b2:${BTN[p.id][1]}">Purchase<svg class="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+        <a class="add-cart payhip-add-to-cart-button" data-theme="none" data-product="${STORE.checkout[p.id]}" href="https://payhip.com/b/${STORE.checkout[p.id]}">${CART}<span>Add to Cart</span></a>
+      </div>`;
 const cardHtml = (p, i) => `
   <article class="card reveal" data-cat="${p.cat}" data-tilt="6" style="--c:${p.color};--d:${i}">
     <div class="card-media"><video muted loop playsinline preload="none" disablepictureinpicture poster="assets/promo-${p.id}.jpg" data-src="assets/promo-${p.id}.mp4" aria-label="${esc(p.name)} promo video"></video></div>
@@ -974,12 +996,12 @@ const cardHtml = (p, i) => `
     <div class="foot">
       <div class="price">${priceHtml(p.price)}</div>
       ${saleOn() ? `<span class="deal-note">${esc(SALE.name)} price until ${saleEndText()}</span>` : ""}
-      <button class="buy" type="button" data-buy="${p.id}">${CART}Purchase</button>
+      ${buyButtons(p)}
     </div>
   </article>`;
 document.getElementById("grid").innerHTML = PRODUCTS.map(cardHtml).join("");
 const consoleCard = (p, i) => `
-  <article class="card console-card reveal" data-cat="${p.cat}" data-tilt="5" style="--c:${p.color};--c2:${p.color2};--d:${i}">
+  <article class="card console-card reveal" data-cat="${p.cat}" data-tilt="5" style="--c:${p.color};--d:${i}">
     <div class="console-art"><img src="${p.image}" width="1280" height="640" loading="lazy" alt=""></div>
     <div class="console-body">
       <h3>${esc(p.name)}</h3>
@@ -987,7 +1009,7 @@ const consoleCard = (p, i) => `
       <span class="console-terms">One-time payment · ${p.pages}-page PDF${saleOn() ? ` · ${esc(SALE.name)} until ${saleEndText()}` : ""}</span>
       <p>${esc(p.blurb)}</p>
       <ul>${p.points.map(s => `<li>${CHECK}<span>${esc(s)}</span></li>`).join("")}</ul>
-      <button class="console-buy" type="button" data-buy="${p.id}">Buy Now<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+      ${buyButtons(p)}
     </div>
   </article>`;
 document.getElementById("console-grid").innerHTML = CONSOLE.map(consoleCard).join("");
@@ -1032,7 +1054,7 @@ function show(id, first) {
   stage.style.setProperty("--win-c", p.color);
   document.getElementById("shot-name").textContent = p.name;
   document.getElementById("shot-tag").textContent = p.tagline;
-  document.getElementById("shot-price").textContent = "Buy " + money(salePrice(p.price));
+  document.getElementById("shot-price").textContent = "Purchase · " + money(salePrice(p.price));
   const my = ++swapId, alt = p.name + " app screenshot";
   if (first || reduceMotion) { shot.src = SHOTS[id]; shot.alt = alt; return; }
   // old screenshot drifts out, the new one fades up once it has loaded, then a band of light sweeps across
@@ -1119,6 +1141,11 @@ function buy(id) {
 }
 function closeModal() { modal.hidden = true; if (lenis) lenis.start(); }
 document.addEventListener("click", e => { const b = e.target.closest("[data-buy]"); if (b) buy(b.dataset.buy); });
+document.addEventListener("click", e => {
+  const add = e.target.closest(".add-cart"); if (!add) return;
+  const label = add.querySelector("span"); label.textContent = "Added to cart"; add.classList.add("added");
+  clearTimeout(add._t); add._t = setTimeout(() => { label.textContent = "Add to Cart"; add.classList.remove("added"); }, 1800);
+});
 document.querySelectorAll(".payhip-buy-button").forEach(a => a.addEventListener("click", closeModal));
 $("modal-close").addEventListener("click", closeModal);
 modal.addEventListener("click", e => { if (e.target === modal) closeModal(); });
