@@ -532,8 +532,9 @@ footer { margin-top: 90px; border-top: 1px solid var(--line); background: rgba(4
 .grid.console-grid { grid-template-columns: repeat(2, minmax(0, 360px)); justify-content: center; gap: 20px; }
 .console-card { padding: 0; gap: 0; overflow: hidden; background: linear-gradient(180deg, color-mix(in srgb, var(--c) 6%, #0a0d20) 0%, #080b1a 100%); border-color: color-mix(in srgb, var(--c) 32%, var(--line)); }
 .console-art { aspect-ratio: 2 / 1; overflow: hidden; border-bottom: 1px solid color-mix(in srgb, var(--c) 30%, transparent); }
-.console-art img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform .9s var(--ease); }
-.console-card:hover .console-art img { transform: scale(1.05); }
+.console-art.is-video { aspect-ratio: 16 / 9; }
+.console-art img, .console-art video { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform .9s var(--ease); }
+.console-card:hover .console-art img, .console-card:hover .console-art video { transform: scale(1.05); }
 .console-body { padding: 20px 24px 24px; display: flex; flex-direction: column; gap: 14px; flex: 1; }
 .console-body h3 { margin: 0; color: var(--c); font: 800 23px/1.15 var(--font-display); font-stretch: 104%; }
 .console-price { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 10px; }
@@ -545,7 +546,16 @@ footer { margin-top: 90px; border-top: 1px solid var(--line); background: rgba(4
 .console-body ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 9px; }
 .console-body li { display: grid; grid-template-columns: 18px 1fr; gap: 9px; font-size: 14.5px; line-height: 1.4; color: #dfe7f6; }
 .console-body li svg { width: 16px; height: 16px; margin-top: 2px; color: var(--c); }
-.console-body .buy-stack { margin-top: auto; }
+.console-body .buy-stack { margin-top: auto; padding-top: 4px; }
+#grid .console-body { padding: 18px 20px 20px; }
+#grid .console-body h3 { font-size: 18.5px; font-stretch: 98%; letter-spacing: -0.005em; }
+#grid .console-price b { font-size: 32px; }
+#grid .console-body p { font-size: 14.5px; }
+#grid .console-body li { font-size: 14px; }
+#bundle .console-price b { font-size: 44px; }
+.bundle-info .bundle-text { margin: 14px 0 0; }
+.bundle-info .console-terms { display: block; margin-top: 8px; }
+.bundle-info .buy-stack { margin-top: 20px; }
 @media (max-width: 760px) { .grid.console-grid { grid-template-columns: minmax(0, 1fr); max-width: 420px; margin-inline: auto; } }
 
 /* link to the Safe to Run page */
@@ -701,21 +711,19 @@ footer { margin-top: 90px; border-top: 1px solid var(--line); background: rgba(4
       <div class="bundle-info">
         <span class="tag" id="bundle-save">Save</span>
         <h3>Edog Complete</h3>
-        <p>All four apps in one purchase: Edog Macro, Edog Controller Macro, Edog Tweaks and Edog Crosshair. Play on keyboard or controller and keep the same setup.</p>
+        <div class="console-price"><b id="bundle-price"></b><s id="bundle-was"></s><span class="console-pill" id="bundle-off" hidden></span></div>
+        <span class="console-terms" id="bundle-note">One payment. One access code unlocks all four apps.</span>
+        <p class="bundle-text">All four apps in one purchase: Edog Macro, Edog Controller Macro, Edog Tweaks and Edog Crosshair. Play on keyboard or controller and keep the same setup.</p>
         <div class="bundle-icons">
           <img src="assets/logo-macro.png" alt="Edog Macro" width="54" height="54">
           <img src="assets/logo-controller.png" alt="Edog Controller Macro" width="54" height="54">
           <img src="assets/logo-tweaks.png" alt="Edog Tweaks" width="54" height="54">
           <img src="assets/logo-crosshair.png" alt="Edog Crosshair" width="54" height="54">
         </div>
-        <div class="bundle-buy">
-          <div class="price"><b id="bundle-price"></b><s id="bundle-was"></s><span class="off" id="bundle-off" hidden></span></div>
-          <span class="fine" id="bundle-note">One payment. One access code unlocks all four apps.</span>
-          <div class="buy-stack">
+        <div class="buy-stack">
             <button class="buy" type="button" data-buy="bundle" style="--b1:#2a9dff;--b2:#6a5cff">Purchase<svg class="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
             <a class="add-cart payhip-add-to-cart-button" style="--c:#3cc8ff" data-theme="none" data-product="lBVwX" href="https://payhip.com/b/lBVwX"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="20" r="1.4"/><circle cx="18" cy="20" r="1.4"/><path d="M2.5 3h3l2.6 12.2a1.6 1.6 0 0 0 1.6 1.3h8.2a1.6 1.6 0 0 0 1.6-1.2L21.5 7H6.4"/></svg><span>Add to Cart</span></a>
           </div>
-        </div>
       </div>
     </div>
   <div class="console" id="console">
@@ -941,10 +949,10 @@ const PRODUCTS = [
 ];
 const BTN = { macro: ["#2a9dff", "#2b62ff"], controller: ["#8f6bff", "#6a3cff"], tweaks: ["#14b981", "#0d9488"], crosshair: ["#f0509a", "#b44dff"], ps5: ["#3f7dff", "#6a4cff"], xbox: ["#16b85c", "#0f9d7f"] };
 const CONSOLE = [
-  { id: "ps5", cat: "console", name: "Edog PS5 Optimization", price: 20, color: "#5b93ff", image: "assets/art-3d-ps5.jpg", guide: true, pages: 41,
+  { id: "ps5", cat: "console", name: "Edog PS5 Optimization", price: 20, color: "#5b93ff", image: "assets/art-pad-ps5.jpg", guide: true, pages: 41,
     blurb: "Set up your PS5 for the most FPS, lowest delay and lowest ping it can reach.",
     points: ["Performance Mode and 120 FPS", "TV, controller and headset settings", "Ethernet, Wi-Fi and NAT Type fixes", "Fortnite settings and final checklist"] },
-  { id: "xbox", cat: "console", name: "Edog Xbox Optimization", price: 20, color: "#2fd46f", image: "assets/art-3d-xbox.jpg", guide: true, pages: 47,
+  { id: "xbox", cat: "console", name: "Edog Xbox Optimization", price: 20, color: "#2fd46f", image: "assets/art-pad-xbox.jpg", guide: true, pages: 47,
     blurb: "Set up your Xbox for the most FPS, lowest delay and lowest ping it can reach.",
     points: ["120 Hz and 120 FPS setup", "TV, controller and headset settings", "Ethernet, Wi-Fi, NAT and QoS fixes", "Fortnite settings and final checklist"] }
 ];
@@ -985,42 +993,29 @@ const buyButtons = p => `<div class="buy-stack">
         <a class="add-cart payhip-add-to-cart-button" data-theme="none" data-product="${STORE.checkout[p.id]}" href="https://payhip.com/b/${STORE.checkout[p.id]}">${CART}<span>Add to Cart</span></a>
       </div>`;
 const cardHtml = (p, i) => `
-  <article class="card reveal" data-cat="${p.cat}" data-tilt="6" style="--c:${p.color};--d:${i}">
-    <div class="card-media"><video muted loop playsinline preload="none" disablepictureinpicture poster="assets/promo-${p.id}.jpg" data-src="assets/promo-${p.id}.mp4" aria-label="${esc(p.name)} promo video"></video></div>
-    <div class="card-top"><img src="assets/logo-${p.id}.png" alt="" width="52" height="52">
-      <div class="tags"><span class="tag">${esc(p.tag)}</span>${saleOn() ? `<span class="tag sale">${SALE.percent}% off</span>` : ""}</div></div>
-    <h3>${esc(p.name)}</h3>
-    <span class="sub">${esc(p.sub)}</span>
-    <p>${esc(p.blurb)}</p>
-    <ul>${p.points.map(t => `<li>${CHECK}<span>${esc(t)}</span></li>`).join("")}</ul>
-    <div class="foot">
-      <div class="price">${priceHtml(p.price)}</div>
-      ${saleOn() ? `<span class="deal-note">${esc(SALE.name)} price until ${saleEndText()}</span>` : ""}
-      ${buyButtons(p)}
-    </div>
-  </article>`;
-document.getElementById("grid").innerHTML = PRODUCTS.map(cardHtml).join("");
-const consoleCard = (p, i) => `
   <article class="card console-card reveal" data-cat="${p.cat}" data-tilt="5" style="--c:${p.color};--d:${i}">
-    <div class="console-art"><img src="${p.image}" width="1280" height="640" loading="lazy" alt=""></div>
+    <div class="console-art${p.image ? "" : " is-video"}">${p.image
+      ? `<img src="${p.image}" width="1280" height="640" loading="lazy" alt="">`
+      : `<video muted loop playsinline preload="none" disablepictureinpicture poster="assets/promo-${p.id}.jpg" data-src="assets/promo-${p.id}.mp4" aria-label="${esc(p.name)} promo video"></video>`}</div>
     <div class="console-body">
       <h3>${esc(p.name)}</h3>
       <div class="console-price">${saleOn() ? `<b>${money(salePrice(p.price))}</b><s>${money(p.price)}</s><span class="console-pill">${SALE.percent}% OFF</span>` : `<b>${money(p.price)}</b>`}</div>
-      <span class="console-terms">One-time payment · ${p.pages}-page PDF${saleOn() ? ` · ${esc(SALE.name)} until ${saleEndText()}` : ""}</span>
+      <span class="console-terms">One-time payment · ${p.pages ? p.pages + "-page PDF" : esc(p.sub)}${saleOn() ? ` · ${esc(SALE.name)} until ${saleEndText()}` : ""}</span>
       <p>${esc(p.blurb)}</p>
       <ul>${p.points.map(s => `<li>${CHECK}<span>${esc(s)}</span></li>`).join("")}</ul>
       ${buyButtons(p)}
     </div>
   </article>`;
-document.getElementById("console-grid").innerHTML = CONSOLE.map(consoleCard).join("");
+document.getElementById("grid").innerHTML = PRODUCTS.map(cardHtml).join("");
+document.getElementById("console-grid").innerHTML = CONSOLE.map(cardHtml).join("");
 
 const separate = PRODUCTS.reduce((s, p) => s + salePrice(p.price), 0);
 document.getElementById("bundle-price").textContent = money(salePrice(BUNDLE.price));
 document.getElementById("bundle-save").textContent = "Save " + money(separate - salePrice(BUNDLE.price)) + " vs separately";
 if (saleOn()) {
   document.getElementById("bundle-was").textContent = money(BUNDLE.price);
-  const off = document.getElementById("bundle-off"); off.textContent = "-" + SALE.percent + "%"; off.hidden = false;
-  document.getElementById("bundle-note").textContent = `${SALE.name} price until ${saleEndText()}. One access code unlocks all four apps.`;
+  const off = document.getElementById("bundle-off"); off.textContent = SALE.percent + "% OFF"; off.hidden = false;
+  document.getElementById("bundle-note").textContent = `One-time payment · One access code for all four apps · ${SALE.name} until ${saleEndText()}`;
   document.querySelector("#hero-pill span").textContent = `${SALE.name.toUpperCase()} · ${SALE.percent}% OFF EVERYTHING · ENDS ${saleEndText().toUpperCase()}`;
 }
 

@@ -532,8 +532,9 @@ footer { margin-top: 90px; border-top: 1px solid var(--line); background: rgba(4
 .grid.console-grid { grid-template-columns: repeat(2, minmax(0, 360px)); justify-content: center; gap: 20px; }
 .console-card { padding: 0; gap: 0; overflow: hidden; background: linear-gradient(180deg, color-mix(in srgb, var(--c) 6%, #0a0d20) 0%, #080b1a 100%); border-color: color-mix(in srgb, var(--c) 32%, var(--line)); }
 .console-art { aspect-ratio: 2 / 1; overflow: hidden; border-bottom: 1px solid color-mix(in srgb, var(--c) 30%, transparent); }
-.console-art img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform .9s var(--ease); }
-.console-card:hover .console-art img { transform: scale(1.05); }
+.console-art.is-video { aspect-ratio: 16 / 9; }
+.console-art img, .console-art video { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform .9s var(--ease); }
+.console-card:hover .console-art img, .console-card:hover .console-art video { transform: scale(1.05); }
 .console-body { padding: 20px 24px 24px; display: flex; flex-direction: column; gap: 14px; flex: 1; }
 .console-body h3 { margin: 0; color: var(--c); font: 800 23px/1.15 var(--font-display); font-stretch: 104%; }
 .console-price { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 10px; }
@@ -545,7 +546,16 @@ footer { margin-top: 90px; border-top: 1px solid var(--line); background: rgba(4
 .console-body ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 9px; }
 .console-body li { display: grid; grid-template-columns: 18px 1fr; gap: 9px; font-size: 14.5px; line-height: 1.4; color: #dfe7f6; }
 .console-body li svg { width: 16px; height: 16px; margin-top: 2px; color: var(--c); }
-.console-body .buy-stack { margin-top: auto; }
+.console-body .buy-stack { margin-top: auto; padding-top: 4px; }
+#grid .console-body { padding: 18px 20px 20px; }
+#grid .console-body h3 { font-size: 18.5px; font-stretch: 98%; letter-spacing: -0.005em; }
+#grid .console-price b { font-size: 32px; }
+#grid .console-body p { font-size: 14.5px; }
+#grid .console-body li { font-size: 14px; }
+#bundle .console-price b { font-size: 44px; }
+.bundle-info .bundle-text { margin: 14px 0 0; }
+.bundle-info .console-terms { display: block; margin-top: 8px; }
+.bundle-info .buy-stack { margin-top: 20px; }
 @media (max-width: 760px) { .grid.console-grid { grid-template-columns: minmax(0, 1fr); max-width: 420px; margin-inline: auto; } }
 
 /* link to the Safe to Run page */
