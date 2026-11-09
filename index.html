@@ -509,6 +509,16 @@ footer { margin-top: 90px; border-top: 1px solid var(--line); background: rgba(4
 .receipt .total { padding-top: 9px; border-top: 1px solid var(--line); color: var(--fg); font-weight: 700; }
 .receipt .total b { font: 800 22px/1 var(--font-display); color: var(--fg); }
 
+/* console guides: a row under the apps and the bundle, with an image instead of a video */
+.console { margin-top: 46px; }
+.console-head { display: grid; gap: 6px; margin-bottom: 20px; }
+.console-head h3 { margin: 0; font: 900 clamp(24px, 3.2vw, 32px)/1.1 var(--font-display); font-stretch: 110%; }
+.console-head p { margin: 0; color: var(--muted); font-size: 16px; }
+.grid.console-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.card-media img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform .9s var(--ease); }
+.card:hover .card-media img { transform: scale(1.05); }
+@media (max-width: 600px) { .grid.console-grid { grid-template-columns: minmax(0, 1fr); } }
+
 /* link to the Safe to Run page */
 .safe-teaser {
   margin: 26px auto 0; max-width: 760px; padding: 18px 20px; border-radius: 16px; display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 16px;
@@ -640,13 +650,14 @@ footer { margin-top: 90px; border-top: 1px solid var(--line); background: rgba(4
     <div class="head reveal">
       <span class="eyebrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l2.6 5.3 5.9.9-4.3 4.1 1 5.8L12 16.4 6.8 19.1l1-5.8L3.5 9.2l5.9-.9z"/></svg>The lineup</span>
       <h2>All Edog Products</h2>
-      <p>Pay once and keep it. You get the download and your access code the moment you pay.</p>
+      <p>Pay once and keep it. Everything downloads the moment you pay, and apps come with your access code.</p>
     </div>
     <div class="filters reveal" style="--d:1" role="group" aria-label="Filter products">
       <button class="filter" type="button" data-filter="all" aria-pressed="true">All</button>
       <button class="filter" type="button" data-filter="macro" aria-pressed="false">Macros</button>
       <button class="filter" type="button" data-filter="pc" aria-pressed="false">PC Tools</button>
       <button class="filter" type="button" data-filter="bundle" aria-pressed="false">Bundle</button>
+      <button class="filter" type="button" data-filter="console" aria-pressed="false">Console</button>
     </div>
     <div class="grid" id="grid"></div>
 
@@ -674,6 +685,13 @@ footer { margin-top: 90px; border-top: 1px solid var(--line); background: rgba(4
           </button>
         </div>
       </div>
+    </div>
+  <div class="console" id="console">
+      <div class="console-head reveal">
+        <h3>Console Guides</h3>
+        <p>On PS5 or Xbox? These are PDF guides, not apps, so there's nothing to install on your console.</p>
+      </div>
+      <div class="grid console-grid" id="console-grid"></div>
     </div>
   </section>
 
@@ -760,6 +778,10 @@ footer { margin-top: 90px; border-top: 1px solid var(--line); background: rgba(4
         <div class="ans"><p>Xbox controllers, PS4 DualShock 4 and PS5 DualSense, over USB or Bluetooth, on a Windows PC. It uses the free ViGEmBus driver, and the installer offers to set it up if you don't have it yet. It doesn't run on a console.</p></div>
       </details>
       <details>
+        <summary>What are the console guides?<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></summary>
+        <div class="ans"><p>They're PDF guides for PS5 and Xbox that walk you through the settings on your console, TV and network, plus Fortnite's own settings. There's no app or access code, so read it on your phone or PC while you go through your console's menus. Nothing can make delay or ping zero, and each guide explains what you can realistically get.</p></div>
+      </details>
+      <details>
         <summary>Will Edog Tweaks mess up my PC?<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></summary>
         <div class="ans"><p>Every tweak saves the setting it replaces, so you can switch it back off and your old value returns. The app makes a Windows restore point before your first change and has an Undo everything button. It never turns off Windows Defender or installs drivers.</p></div>
       </details>
@@ -816,7 +838,7 @@ footer { margin-top: 90px; border-top: 1px solid var(--line); background: rgba(4
 
 <div class="modal" id="modal" hidden role="dialog" aria-modal="true" aria-labelledby="modal-title">
   <div class="modal-box">
-    <div class="row"><img id="modal-img" alt="" width="52" height="52"><div><h3 id="modal-title"></h3><span class="fine">Instant download + access code</span></div></div>
+    <div class="row"><img id="modal-img" alt="" width="52" height="52"><div><h3 id="modal-title"></h3><span class="fine" id="modal-kind">Instant download + access code</span></div></div>
     <div class="receipt">
       <div id="r-was-row"><span>Price</span><s id="r-was"></s></div>
       <div class="good" id="r-off-row"><span id="r-off-label"></span><span id="r-off"></span></div>
@@ -831,6 +853,8 @@ footer { margin-top: 90px; border-top: 1px solid var(--line); background: rgba(4
       <a class="btn btn-primary btn-sm payhip-buy-button" data-theme="none" data-product="pSFuG" data-pid="tweaks" href="https://payhip.com/b/pSFuG" target="_blank" rel="noopener" hidden>Continue to checkout</a>
       <a class="btn btn-primary btn-sm payhip-buy-button" data-theme="none" data-product="PhsWn" data-pid="crosshair" href="https://payhip.com/b/PhsWn" target="_blank" rel="noopener" hidden>Continue to checkout</a>
       <a class="btn btn-primary btn-sm payhip-buy-button" data-theme="none" data-product="lBVwX" data-pid="bundle" href="https://payhip.com/b/lBVwX" target="_blank" rel="noopener" hidden>Continue to checkout</a>
+      <a class="btn btn-primary btn-sm payhip-buy-button" data-theme="none" data-product="QGyo4" data-pid="ps5" href="https://payhip.com/b/QGyo4" target="_blank" rel="noopener" hidden>Continue to checkout</a>
+      <a class="btn btn-primary btn-sm payhip-buy-button" data-theme="none" data-product="pDzGc" data-pid="xbox" href="https://payhip.com/b/pDzGc" target="_blank" rel="noopener" hidden>Continue to checkout</a>
       <a class="btn btn-primary btn-sm" id="checkout-soon" href="https://www.youtube.com/@edogproductions" target="_blank" rel="noopener">Open YouTube</a>
       <button class="btn btn-ghost btn-sm" type="button" id="modal-close">Close</button>
     </div>
@@ -846,7 +870,7 @@ footer { margin-top: 90px; border-top: 1px solid var(--line); background: rgba(4
 // popup markup above carry the same ids. Empty = "opens soon" popup.
 const STORE = {
   discord: "https://discord.gg/rudgnMrP4H",
-  checkout: { macro: "zdYWK", controller: "SThaH", tweaks: "pSFuG", crosshair: "PhsWn", bundle: "lBVwX" }
+  checkout: { macro: "zdYWK", controller: "SThaH", tweaks: "pSFuG", crosshair: "PhsWn", bundle: "lBVwX", ps5: "QGyo4", xbox: "pDzGc" }
 };
 // A real sale: each Payhip product has the full price plus "Product is on sale" at half price, so Payhip's own
 // checkout shows the full price crossed out. After "ends" the site shows full prices: switch the Payhip sale off then too.
@@ -882,6 +906,14 @@ const PRODUCTS = [
     tagline: "41 crosshairs plus a full designer",
     points: ["41 built-in crosshairs, plus your own designs", "Layer designer with fire, aim and reload animations", "Hide it while aiming or swap with a hotkey", "Share codes so friends can copy your crosshair"] }
 ];
+const CONSOLE = [
+  { id: "ps5", cat: "console", name: "Edog PS5 Optimization Guide", sub: "PDF guide · 41 pages", price: 20, color: "#4f8dff", tag: "PS5", image: "assets/console-ps5.jpg", guide: true,
+    blurb: "Every PS5 setting for the most FPS, lowest delay and lowest ping you can get, in the order that matters most.",
+    points: ["Performance Mode, Video Output and 120 FPS in Fortnite", "TV, controller and headset settings that cut delay", "Ethernet, Wi-Fi, NAT Type 3 and lag spike fixes", "Fortnite settings, troubleshooting and a final checklist"] },
+  { id: "xbox", cat: "console", name: "Edog Xbox Optimization Guide", sub: "PDF guide · 47 pages", price: 20, color: "#35c759", tag: "Xbox", image: "assets/console-xbox.jpg", guide: true,
+    blurb: "Every Xbox setting for the most FPS, lowest delay and lowest ping you can get, in the order that matters most.",
+    points: ["120 Hz, video settings and 120 FPS in Fortnite", "TV, controller and headset settings that cut delay", "Ethernet, Wi-Fi, NAT type, QoS and lag spike fixes", "Fortnite settings, troubleshooting and a final checklist"] }
+];
 const SHOTS = { macro: "assets/shot-macro.jpg", controller: "assets/shot-controller.jpg", tweaks: "assets/shot-tweaks.jpg", crosshair: "assets/shot-crosshair.jpg" };
 const BUNDLE = { id: "bundle", name: "Edog Complete", price: 120 };
 // logos: Simple Icons (CC0) paths, plus the Fortnite and Rocket League app icons
@@ -905,7 +937,7 @@ const salePrice = n => saleOn() ? Math.round(n * (100 - SALE.percent)) / 100 : n
 const money = n => "$" + (Number.isInteger(n) ? n : n.toFixed(2));
 const money2 = n => "$" + n.toFixed(2);
 const saleEndText = () => new Date(Date.parse(SALE.ends) - 1).toLocaleDateString("en-US", { month: "short", day: "numeric", timeZone: "UTC" });
-const byId = id => PRODUCTS.find(p => p.id === id) || BUNDLE;
+const byId = id => PRODUCTS.find(p => p.id === id) || CONSOLE.find(p => p.id === id) || BUNDLE;
 const CART = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="20" r="1.4"/><circle cx="18" cy="20" r="1.4"/><path d="M2.5 3h3l2.6 12.2a1.6 1.6 0 0 0 1.6 1.3h8.2a1.6 1.6 0 0 0 1.6-1.2L21.5 7H6.4"/></svg>';
 const CHECK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>';
 const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
@@ -914,9 +946,9 @@ const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;",
 const priceHtml = n => saleOn()
   ? `<b>${money(salePrice(n))}</b><s>${money(n)}</s><span class="off">-${SALE.percent}%</span>`
   : `<b>${money(n)}</b><small>one-time</small>`;
-document.getElementById("grid").innerHTML = PRODUCTS.map((p, i) => `
+const cardHtml = (p, i) => `
   <article class="card reveal" data-cat="${p.cat}" data-tilt="6" style="--c:${p.color};--d:${i}">
-    <div class="card-media"><video muted loop playsinline preload="none" disablepictureinpicture poster="assets/promo-${p.id}.jpg" data-src="assets/promo-${p.id}.mp4" aria-label="${esc(p.name)} promo video"></video></div>
+    <div class="card-media">${p.image ? `<img src="${p.image}" width="1280" height="720" loading="lazy" alt="${esc(p.name)} cover">` : `<video muted loop playsinline preload="none" disablepictureinpicture poster="assets/promo-${p.id}.jpg" data-src="assets/promo-${p.id}.mp4" aria-label="${esc(p.name)} promo video"></video>`}</div>
     <div class="card-top"><img src="assets/logo-${p.id}.png" alt="" width="52" height="52">
       <div class="tags"><span class="tag">${esc(p.tag)}</span>${saleOn() ? `<span class="tag sale">${SALE.percent}% off</span>` : ""}</div></div>
     <h3>${esc(p.name)}</h3>
@@ -928,7 +960,9 @@ document.getElementById("grid").innerHTML = PRODUCTS.map((p, i) => `
       ${saleOn() ? `<span class="deal-note">${esc(SALE.name)} price until ${saleEndText()}</span>` : ""}
       <button class="buy" type="button" data-buy="${p.id}">${CART}Purchase</button>
     </div>
-  </article>`).join("");
+  </article>`;
+document.getElementById("grid").innerHTML = PRODUCTS.map(cardHtml).join("");
+document.getElementById("console-grid").innerHTML = CONSOLE.map(cardHtml).join("");
 
 const separate = PRODUCTS.reduce((s, p) => s + salePrice(p.price), 0);
 document.getElementById("bundle-price").textContent = money(salePrice(BUNDLE.price));
@@ -1022,7 +1056,8 @@ document.querySelectorAll(".filter").forEach(f => f.addEventListener("click", ()
   const want = f.dataset.filter;
   document.querySelectorAll(".filter").forEach(x => x.setAttribute("aria-pressed", String(x === f)));
   document.querySelectorAll("#grid .card").forEach(c => { c.hidden = !(want === "all" || c.dataset.cat === want); });
-  document.getElementById("grid").hidden = want === "bundle";
+  document.getElementById("grid").hidden = want === "bundle" || want === "console";
+  document.getElementById("console").hidden = !(want === "all" || want === "console");
   document.getElementById("bundle").hidden = !(want === "all" || want === "bundle");
 }));
 
@@ -1045,7 +1080,11 @@ function buy(id) {
   $("checkout-soon").hidden = !!url;
   $("modal-note").textContent = !url
     ? "Checkout for this app opens soon. Follow @edogproductions on YouTube to catch the launch."
-    : "Enter your email at checkout. Your download and access code appear the moment you pay, and Payhip emails you a receipt with both.";
+    : p.guide
+      ? "Enter your email at checkout. Your PDF appears the moment you pay, and Payhip emails you a receipt with the download link."
+      : "Enter your email at checkout. Your download and access code appear the moment you pay, and Payhip emails you a receipt with both.";
+  $("modal-kind").textContent = p.guide ? "Instant PDF download" : "Instant download + access code";
+  document.querySelector(".modal-safe").hidden = !!p.guide;
   modal.hidden = false;
   if (lenis) lenis.stop();
   (url ? go : $("modal-close")).focus();

@@ -509,6 +509,16 @@ footer { margin-top: 90px; border-top: 1px solid var(--line); background: rgba(4
 .receipt .total { padding-top: 9px; border-top: 1px solid var(--line); color: var(--fg); font-weight: 700; }
 .receipt .total b { font: 800 22px/1 var(--font-display); color: var(--fg); }
 
+/* console guides: a row under the apps and the bundle, with an image instead of a video */
+.console { margin-top: 46px; }
+.console-head { display: grid; gap: 6px; margin-bottom: 20px; }
+.console-head h3 { margin: 0; font: 900 clamp(24px, 3.2vw, 32px)/1.1 var(--font-display); font-stretch: 110%; }
+.console-head p { margin: 0; color: var(--muted); font-size: 16px; }
+.grid.console-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.card-media img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform .9s var(--ease); }
+.card:hover .card-media img { transform: scale(1.05); }
+@media (max-width: 600px) { .grid.console-grid { grid-template-columns: minmax(0, 1fr); } }
+
 /* link to the Safe to Run page */
 .safe-teaser {
   margin: 26px auto 0; max-width: 760px; padding: 18px 20px; border-radius: 16px; display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 16px;
