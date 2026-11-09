@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <style>body{margin:0}[hidden]{display:none!important}</style>
 <title>Edog Tweaks</title>
+<script src="assets/motion.js"></script>
 <script>
   // scroll-in animations only run with JS; if they aren't set up within 2.5 s, show everything
   document.documentElement.classList.add("js");
@@ -557,6 +558,29 @@ footer { margin-top: 90px; border-top: 1px solid var(--line); background: rgba(4
 .bundle-info .buy-stack { margin-top: 20px; }
 @media (max-width: 760px) { .grid.console-grid { grid-template-columns: minmax(0, 1fr); max-width: 420px; margin-inline: auto; } }
 
+/* Animations switch, and what "Off" turns off */
+.motion-btn {
+  position: fixed; left: max(14px, env(safe-area-inset-left, 0px)); bottom: max(14px, env(safe-area-inset-bottom, 0px)); z-index: 30;
+  display: inline-flex; align-items: center; gap: 7px; padding: 9px 13px; border-radius: 99px; cursor: pointer;
+  color: var(--muted); background: rgba(8, 15, 32, 0.88); border: 1px solid var(--line-2);
+  font: 600 13px/1 var(--font-body); box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  transition: color .15s, border-color .15s;
+}
+.motion-btn:hover { color: var(--fg); border-color: var(--accent); }
+.motion-btn svg { width: 15px; height: 15px; color: var(--accent); }
+.motion-btn b { color: var(--fg); font-weight: 700; min-width: 2.1em; text-align: left; }
+html[data-motion="off"] .motion-btn svg { color: var(--faint); }
+html.motion-off, html.motion-off *, html.motion-off *::before, html.motion-off *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+html.motion-off .reveal { opacity: 1 !important; transform: none !important; filter: none !important; }
+html.motion-off .marquee { mask-image: none; -webkit-mask-image: none; }
+html.motion-off .marquee-track { width: auto; flex-wrap: wrap; justify-content: center; }
+html.motion-off .marquee-track .dupe { display: none; }
+html.motion-off .nav, html.motion-off .modal { backdrop-filter: none; -webkit-backdrop-filter: none; }
+html.motion-off .nav { background: rgba(8, 15, 32, 0.96); }
+html.motion-off .stage-glow { display: none; }
+html.motion-off .floaty { will-change: auto; }
+@media (max-width: 600px) { .motion-btn span { display: none; } .motion-btn { padding: 9px 11px; } }
+
 /* link to the Safe to Run page */
 .safe-teaser {
   margin: 26px auto 0; max-width: 760px; padding: 18px 20px; border-radius: 16px; display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 16px;
@@ -917,15 +941,20 @@ const STORE = {
 const SALE = { name: "Holiday sale", percent: 50, ends: "2027-02-01T00:00:00Z" };
 
 // smooth (eased) mouse-wheel scrolling; off for "reduce motion", touch scrolling stays native
-const reduceMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
+let reduceMotion = EdogMotion.off;
 let lenis = null;
-try {
-  if (window.Lenis && !reduceMotion) {
-    lenis = new Lenis({ lerp: 0.1 });
-    const tick = t => { lenis.raf(t); requestAnimationFrame(tick); };
-    requestAnimationFrame(tick);
-  }
-} catch (e) { lenis = null; }
+function syncLenis() {
+  try {
+    if (reduceMotion) { if (lenis) { lenis.destroy(); lenis = null; } }
+    else if (!lenis && window.Lenis) {
+      const me = lenis = new Lenis({ lerp: 0.1 });
+      const tick = t => { if (lenis !== me) return; me.raf(t); requestAnimationFrame(tick); };
+      requestAnimationFrame(tick);
+    }
+  } catch (e) { lenis = null; }
+}
+syncLenis();
+EdogMotion.onChange(off => { reduceMotion = off; syncLenis(); });
 
 // price = the full Payhip price
 const PRODUCTS = [
@@ -1068,7 +1097,9 @@ function show(id, first) {
 let autoCycle = !reduceMotion;
 const ids = PRODUCTS.map(p => p.id);
 function restartFill() { tabs.classList.remove("cycling"); void pill.offsetWidth; if (autoCycle) tabs.classList.add("cycling"); }
-function stopCycle() { autoCycle = false; tabs.classList.remove("cycling", "paused"); }
+let tabPicked = false;
+function stopCycle() { tabPicked = true; autoCycle = false; tabs.classList.remove("cycling", "paused"); }
+EdogMotion.onChange(off => { autoCycle = !off && !tabPicked; restartFill(); });
 pill.addEventListener("animationend", e => {
   if (e.animationName !== "tabfill" || !autoCycle) return;
   show(ids[(ids.indexOf(current) + 1) % ids.length]); restartFill();
@@ -1185,22 +1216,27 @@ if ("IntersectionObserver" in window) {
   window.__revealReady = true;
 } else document.documentElement.classList.remove("js");
 
-// promo videos: load and play only while on screen (posters only for "reduce motion" or data saver)
-const saveData = !!(navigator.connection && navigator.connection.saveData);
-if (!reduceMotion && !saveData && "IntersectionObserver" in window) {
+// promo videos: load and play only while on screen; with animations off they stay on their still poster
+if ("IntersectionObserver" in window) {
+  const clips = [...document.querySelectorAll("video[data-src]")];
   const vio = new IntersectionObserver(entries => entries.forEach(e => {
     const v = e.target;
+    if (reduceMotion) return;
     if (e.isIntersecting) {
       // the hero video has a 1080p copy for big or sharp screens; everything else uses the lighter file
       if (!v.getAttribute("src")) v.src = v.dataset.srcHd && v.clientWidth * (devicePixelRatio || 1) > 1500 ? v.dataset.srcHd : v.dataset.src;
       const p = v.play(); if (p) p.catch(() => {});
     } else if (!v.paused) v.pause();
   }), { rootMargin: "200px 0px" });
-  document.querySelectorAll("video[data-src]").forEach(v => { v.muted = true; vio.observe(v); });
+  clips.forEach(v => { v.muted = true; vio.observe(v); });
+  EdogMotion.onChange(off => clips.forEach(v => {
+    if (off) { v.pause(); v.removeAttribute("src"); v.load(); }
+    else { vio.unobserve(v); vio.observe(v); } // observing again re-checks which ones are on screen
+  }));
 }
 
 // cards lean toward the mouse, with a soft light under the cursor
-if (!reduceMotion && matchMedia("(hover: hover) and (pointer: fine)").matches) {
+if (matchMedia("(hover: hover) and (pointer: fine)").matches) {
   document.querySelectorAll("[data-tilt]").forEach(el => {
     const max = Number(el.dataset.tilt) || 5; let frame = 0, px = 0.5, py = 0.5;
     const apply = () => {
@@ -1210,23 +1246,26 @@ if (!reduceMotion && matchMedia("(hover: hover) and (pointer: fine)").matches) {
       el.style.setProperty("--mx", (px * 100).toFixed(1) + "%");
       el.style.setProperty("--my", (py * 100).toFixed(1) + "%");
     };
-    el.addEventListener("pointerenter", () => el.classList.add("tilting"));
+    el.addEventListener("pointerenter", () => { if (!reduceMotion) el.classList.add("tilting"); });
     el.addEventListener("pointermove", e => {
+      if (reduceMotion) return;
       const r = el.getBoundingClientRect();
       px = (e.clientX - r.left) / r.width; py = (e.clientY - r.top) / r.height;
       if (!frame) frame = requestAnimationFrame(apply);
     });
-    el.addEventListener("pointerleave", () => {
+    const flat = () => {
       cancelAnimationFrame(frame); frame = 0; el.classList.remove("tilting");
       el.style.setProperty("--rx", "0deg"); el.style.setProperty("--ry", "0deg");
-    });
+    };
+    el.addEventListener("pointerleave", flat);
+    EdogMotion.onChange(off => { if (off) flat(); });
   });
 }
 
 // starfield
 (() => {
   const c = document.getElementById("stars"), x = c.getContext("2d");
-  const still = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  let still = EdogMotion.off;
   let w, h, dpr, stars = [];
   function size() {
     dpr = Math.min(devicePixelRatio || 1, 2); w = innerWidth; h = innerHeight;
@@ -1268,6 +1307,7 @@ if (!reduceMotion && matchMedia("(hover: hover) and (pointer: fine)").matches) {
     }
   }
   size(); addEventListener("resize", () => { size(); if (still) draw(); }); draw();
+  EdogMotion.onChange(off => { still = off; last = performance.now(); if (off) meteors = []; draw(); });
 })();
 </script>
 
